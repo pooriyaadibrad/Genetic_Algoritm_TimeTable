@@ -15,24 +15,30 @@ class geneticTimeTable():
         self.teacher_num = teacher_num
         self.class_num = class_num
         self.day = day
-        self.pupiolation = 6
+        self.pupiolation = 2
         self.mutateRate=0.1
-
+        self.InitPopulation()
     def InitPopulation(self):
-            chromosomes = []
-            for i in range(self.pupiolation):
-                day = []
-                for item in range(self.time):
-                    times = []
-                    for item1 in range(self.class_num):
-                        gen = random.randint(1, self.teacher_num)
-                        times.append(gen)
-                    day.append(times)
-                chromosomes.append(day)
-            print(chromosomes)
+        chromosomes = []
+        for i in range(self.pupiolation):
+            day = []
+            for item in range(self.time):
+                times = []
+                for item1 in range(self.class_num):
+                    gen = random.randint(1, self.teacher_num)
+                    times.append(gen)
+                day.append(times)
+            chromosomes.append(day)
+        chromosomesWithFittnes=[]
+        for chromosome in chromosomes:
+            chromosomesWithFittnes.append(self.Compration(chromosome))
+
+        print(chromosomesWithFittnes)
+
     def Compration(self,chromosome):
         FittnesAfterConfilictCheck=self.Confilict(chromosome)
-
+        FinalFittnes=self.DayFittnes(chromosome,FittnesAfterConfilictCheck)
+        return (chromosome,FinalFittnes)
     def Confilict(self,chromosome):
         fittnes = 0
         for times in chromosome:
@@ -50,6 +56,8 @@ class geneticTimeTable():
                 CheckResult=self.Data(TeacherId,iTimes)
                 if CheckResult:
                     FittnesAfterConfilictCheck+=1
+        FittnesAfterSoftCheck=FittnesAfterConfilictCheck
+        return FittnesAfterSoftCheck
 
     def Data(self,id,iTimes):
         Check=False
