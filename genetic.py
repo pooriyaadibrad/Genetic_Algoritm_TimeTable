@@ -45,15 +45,21 @@ class geneticTimeTable():
         return fittnes
     def DayFittnes(self,chromosome,FittnesAfterConfilictCheck):
         for times in chromosome:
+            iTimes=chromosome.index(times)
             for TeacherId in times:
-                pass
-    def Data(self,id):
-        data=session.query(teacher).filter(teacher.id1 == id).all()
-        for i in data:
-            print(i.name)
+                CheckResult=self.Data(TeacherId,iTimes)
+                if CheckResult:
+                    FittnesAfterConfilictCheck+=1
+
+    def Data(self,id,iTimes):
+        Check=False
+        teacherAvalable=session.query(teacher).filter(teacher.id1 == id).all()
+        for Teacher in teacherAvalable:
+            if Teacher.DayAvalble==self.day and Teacher.TimeAvalble== iTimes:
+                return Check
+        Check=True
+        return Check
+
 
 sample=geneticTimeTable(time=4,teacher_num=10,class_num=8,day="monday")
-
-
-sample.Data(1)
 
