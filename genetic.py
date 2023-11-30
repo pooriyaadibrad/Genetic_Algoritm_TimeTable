@@ -15,7 +15,7 @@ class geneticTimeTable():
         self.teacher_num = teacher_num
         self.class_num = class_num
         self.day = day
-        self.pupiolation = 2
+        self.pupiolation = 5
         self.mutateRate=0.1
         self.InitPopulation()
     def InitPopulation(self):
@@ -33,7 +33,7 @@ class geneticTimeTable():
         for chromosome in chromosomes:
             chromosomesWithFittnes.append(self.Compration(chromosome))
 
-
+        self.Selectparent(chromosomesWithFittnes)
 
     def Compration(self,chromosome):
         FittnesAfterConfilictCheck=self.Confilict(chromosome)
@@ -68,6 +68,80 @@ class geneticTimeTable():
         Check=True
         return Check
 
+    def Selectparent(self, chromosoms):
+        chromosoms=self.sortANDreverse(chromosoms)
+        chromosoms.reverse()
+        ave=self.avrage_fittnes(chromosoms)
+        print(chromosoms)
 
-sample=geneticTimeTable(time=4,teacher_num=10,class_num=8,day="monday")
+        childlist = []
+        for i in range(0, 4):
+            for j in range(i + 1, 5):
+                parent1 = chromosoms[i]
+                parent2 = chromosoms[j]
+
+                childlist.extend(self.crossover(parent1, parent2,ave))
+
+        childlist=self.sortANDreverse(childlist)
+        childlist.reverse()
+        childlist=childlist[0:6]
+        for i in range(5):
+            if chromosoms[i]!=childlist[i]:
+                if not self.check(childlist[i],chromosoms):
+                    if chromosoms[i][1]>childlist[i][1]:
+                        chromosoms[i]=childlist[i]
+        print(chromosoms)
+        return chromosoms
+
+    def check(self,child,chromosoms):
+        for item in chromosoms:
+            if item==child:
+                return True
+        return False
+    def crossover(self, parent1, parent2,ave):
+        resultchild=[]
+        parent1_without_f = parent1[0]
+        parent2_without_f = parent2[0]
+        parent1_without_f_half = [list(parent1_without_f[:int(self.time/2)]),
+                                  list(parent1_without_f[int(self.time/2):])]
+        parent2_without_f_half = [list(parent2_without_f[:int(self.time/2)]),
+                                  list(parent2_without_f[int(self.time/2):])]
+
+        child1 = parent1_without_f_half[0] + parent2_without_f_half[1]
+        child2 = parent1_without_f_half[1] + parent2_without_f_half[0]
+        childs=[child1,child2]
+        for i in range(2):
+            random_number = random.random()
+
+            if random_number<0.1:
+                childs[i]=self.mutate(childs[i])
+        child_with_f1 = self.Compration(childs[0])
+        child_with_f2 = self.Compration(childs[1])
+        if child_with_f1[1]<ave:
+            resultchild.append(child_with_f1)
+        if child_with_f2[1] < ave:
+            resultchild.append(child_with_f2)
+        return resultchild
+    def mutate(self,child):
+        random_index_gen = random.randint(0, self.time - 1)
+        chromosome = []
+        for item1 in range(self.class_num):
+            gen = random.randint(1, self.teacher_num)
+            chromosome.append(gen)
+        child[random_index_gen]=chromosome
+        return child
+
+    def sortANDreverse(self,chromosoms):
+
+        sort_chromosomes_by_fittnes = sorted(chromosoms, key=lambda x: x[1])
+        sort_chromosomes_by_fittnes.reverse()
+
+        return sort_chromosomes_by_fittnes
+    def avrage_fittnes(self, chromosomes_with_fittneses):
+        ave = 0
+
+        for item in chromosomes_with_fittneses:
+            ave += int(item[1])
+        return ave / self.pupiolation
+sample=geneticTimeTable(time=4,teacher_num=3,class_num=8,day="monday")
 
