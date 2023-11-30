@@ -33,7 +33,7 @@ class geneticTimeTable():
         for chromosome in chromosomes:
             chromosomesWithFittnes.append(self.Compration(chromosome))
 
-        print(chromosomesWithFittnes)
+
 
     def Compration(self,chromosome):
         FittnesAfterConfilictCheck=self.Confilict(chromosome)
