@@ -1,9 +1,11 @@
 from sqlalchemy import Column, create_engine, INTEGER, String
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import declarative_base,sessionmaker
 
 engine=create_engine("mssql+pyodbc://pooriya123:123@./geneticTime?driver=ODBC+Driver+17+for+SQL+Server")
 
 base=declarative_base()
+sessions=sessionmaker(bind=engine)
+session=sessions()
 class teacher(base):
     __tablename__="teacher"
     id=Column(INTEGER,primary_key=True)
