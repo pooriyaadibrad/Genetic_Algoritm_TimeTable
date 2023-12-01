@@ -162,7 +162,7 @@ class geneticTimeTable():
         childs=[child1,child2]
         for i in range(2):
             random_number = random.random()
-            print(random_number)
+
             if random_number<self.mutateRate:
                 childs[i]=self.mutate(childs[i])
         child_with_f1 = self.Compration(childs[0])
