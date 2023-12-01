@@ -72,7 +72,7 @@ class geneticTimeTable():
         chromosoms=self.sortANDreverse(chromosoms)
         chromosoms.reverse()
         ave=self.avrage_fittnes(chromosoms)
-        print(chromosoms)
+
 
         childlist = []
         for i in range(0, 4):
@@ -84,13 +84,14 @@ class geneticTimeTable():
 
         childlist=self.sortANDreverse(childlist)
         childlist.reverse()
-        childlist=childlist[0:6]
-        for i in range(5):
+        childlist=childlist[0:5]
+        print(childlist)
+        for i in range(len(childlist)):
             if chromosoms[i]!=childlist[i]:
                 if not self.check(childlist[i],chromosoms):
                     if chromosoms[i][1]>childlist[i][1]:
                         chromosoms[i]=childlist[i]
-        print(chromosoms)
+
         return chromosoms
 
     def check(self,child,chromosoms):
