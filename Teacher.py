@@ -48,8 +48,8 @@ class teacher(base):
         return self._family
     family = property(getfamily, setfamily)
 base.metadata.create_all(engine)
-teacher1=teacher(id=1,name="pooriya",family="adib",DayAvalble="monday",TimeAvalble=2)
-teacher2=teacher(id=1,name="pooriya",family="adib",DayAvalble="sanday",TimeAvalble=4)
-teacher3=teacher(id=1,name="pooriya",family="adib",DayAvalble="monday",TimeAvalble=3)
+teacher1=teacher(id=10,name="pooriya",family="adib",DayAvalble="monday",TimeAvalble=2)
+teacher2=teacher(id=10,name="pooriya",family="adib",DayAvalble="sanday",TimeAvalble=4)
+teacher3=teacher(id=10,name="pooriya",family="adib",DayAvalble="monday",TimeAvalble=0)
 
 
