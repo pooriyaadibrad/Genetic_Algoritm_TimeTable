@@ -41,7 +41,7 @@ class geneticTimeTable():
         chromosomesWithFittnes=[]
         for chromosome in chromosomes:
             chromosomesWithFittnes.append(self.Compration(chromosome))
-
+        print(self.sortANDreverse(chromosomesWithFittnes))
         newPopulation=self.Selectparent(chromosomesWithFittnes)
         self.DetectiveResult(newPopulation)
 
@@ -108,30 +108,43 @@ class geneticTimeTable():
         chromosoms=self.sortANDreverse(chromosoms)
         chromosoms.reverse()
         ave=self.avrage_fittnes(chromosoms)
-
-
+        selectList=[]
+        for k in range(2):
+            selectList.append(chromosoms[k])
+            selectList.append(chromosoms[-(k+1)])
         childlist = []
-        for i in range(0, 4):
-            for j in range(i + 1, 5):
-                parent1 = chromosoms[i]
-                parent2 = chromosoms[j]
+        for i in range(0, 3):
+            for j in range(i + 1, 4):
+                parent1 = selectList[i]
+                parent2 = selectList[j]
 
                 childlist.extend(self.crossover(parent1, parent2,ave))
 
         childlist=self.sortANDreverse(childlist)
         childlist.reverse()
-        childlist=childlist[0:5]
+        childlist=childlist[0:4]
+        secureChildlist=[]
+        selectList=self.sortANDreverse(selectList)
 
         for i in range(len(childlist)):
-            if chromosoms[i]!=childlist[i]:
-                if not self.check(childlist[i],chromosoms):
-                    if chromosoms[i][1]>childlist[i][1]:
-                        chromosoms[i]=childlist[i]
-        self.numGenerations+=1
+            if not self.check(childlist[i],selectList):
+                secureChildlist.append(childlist[i])
+        childlist=self.sortANDreverse(secureChildlist)
+        childlist.reverse()
+        chromosoms=self.PlaceMent(selectList,secureChildlist,chromosoms)
+        self.numGenerations += 1
+        return chromosoms
+    def PlaceMent(self,selectList,secureChildList,chromosoms):
+        for child in secureChildList:
+            chromosoms[chromosoms.index(selectList[0])]=child
+            selectList.remove(selectList[0])
         return chromosoms
 
-    def check(self,child,chromosoms):
-        for item in chromosoms:
+
+
+
+    def check(self,child,selectList):
+        for item in selectList:
             if item==child:
                 return True
         return False
