@@ -91,13 +91,13 @@ class app(Frame):
 
         self.btnRegister = Button(self.dashbord, text="Register", width=10, background="#005B41", fg="white", font=2,
                                   borderwidth=5, relief="raised", padx=5, pady=0)
-        #self.btnRegister.bind("<Button-1>", self.onclickRegister)
+        self.btnRegister.bind("<Button-1>", self.onclickRegister)
         self.btnRegister.configure(state=DISABLED)
         self.btnRegister.place(x=135, y=500)
 
         self.btnRegister = Button(self.dashbord, text="Register", width=10, background="#005B41", fg="white", font=2,
                                   borderwidth=5, relief="raised", padx=5, pady=0)
-        #self.btnRegister.bind("<Button-1>", self.onclickRegister)
+        self.btnRegister.bind("<Button-1>", self.onclickRegister)
         self.btnRegister.configure(state=DISABLED)
         self.btnRegister.place(x=135, y=500)
 

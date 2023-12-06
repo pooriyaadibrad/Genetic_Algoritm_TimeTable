@@ -134,6 +134,7 @@ class geneticTimeTable():
         childlist.reverse()
         chromosoms=self.PlaceMent(selectList,secureChildlist,chromosoms)
         self.numGenerations += 1
+        print(self.numGenerations)
         chromosoms=self.sortANDreverse(chromosoms)
         chromosoms.reverse()
         print(chromosoms[0])
@@ -208,5 +209,5 @@ class geneticTimeTable():
         else:
            pass
 
-sample=geneticTimeTable(time=4,class_num=8,day="monday",numGenarationInput=1000)
+sample=geneticTimeTable(time=4,class_num=8,day="monday",numGenarationInput=965)
 
