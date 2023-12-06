@@ -10,14 +10,15 @@ engine=create_engine("mssql+pyodbc://pooriya123:123@./geneticTime?driver=ODBC+Dr
 sessions=sessionmaker(bind=engine)
 session=sessions()
 class geneticTimeTable():
-    def __init__(self, time, class_num, day):
+    def __init__(self, time, class_num, day,numGenarationInput=100):
         self.time = time
         self.teacher_num = 0
         self.class_num = class_num
         self.day = day
+        self.numGenarationInput=numGenarationInput
         self.numGenerations=0
         self.pupiolation =100
-        self.mutateRate=0.1
+        self.mutateRate=0.5
         self.InitPopulation()
     def NumberOfTeacher(self):
         count=0
@@ -41,7 +42,7 @@ class geneticTimeTable():
         chromosomesWithFittnes=[]
         for chromosome in chromosomes:
             chromosomesWithFittnes.append(self.Compration(chromosome))
-        print(self.sortANDreverse(chromosomesWithFittnes))
+
         newPopulation=self.Selectparent(chromosomesWithFittnes)
         self.DetectiveResult(newPopulation)
 
@@ -50,7 +51,7 @@ class geneticTimeTable():
         FinalFittnes=self.DayFittnes(chromosome,FittnesAfterConfilictCheck)
         return (chromosome,FinalFittnes)
     def Confilict(self,chromosome):
-        if self.numGenerations!=100:
+        if self.numGenerations!=self.numGenarationInput:
             fittnes = 0
             for times in chromosome:
                 counter = Counter(times)
@@ -58,7 +59,7 @@ class geneticTimeTable():
                     if count == 1:
                         continue
                     else:
-                        fittnes += count - 1
+                        fittnes += 10*(count - 1)
             return fittnes
         else:
             fittnes = 0
@@ -71,10 +72,10 @@ class geneticTimeTable():
                         print(chromosome)
                         print(times,chromosome.index(times))
                         print(element)
-                        fittnes += count - 1
+                        fittnes += 10*(count - 1)
             return fittnes
     def DayFittnes(self,chromosome,FittnesAfterConfilictCheck):
-        if self.numGenerations!=100:
+        if self.numGenerations!=self.numGenarationInput:
             for times in chromosome:
                 iTimes=chromosome.index(times)
                 for TeacherId in times:
@@ -109,12 +110,12 @@ class geneticTimeTable():
         chromosoms.reverse()
         ave=self.avrage_fittnes(chromosoms)
         selectList=[]
-        for k in range(2):
+        for k in range(10):
             selectList.append(chromosoms[k])
             selectList.append(chromosoms[-(k+1)])
         childlist = []
-        for i in range(0, 3):
-            for j in range(i + 1, 4):
+        for i in range(0, 9):
+            for j in range(i + 1, 10):
                 parent1 = selectList[i]
                 parent2 = selectList[j]
 
@@ -122,7 +123,7 @@ class geneticTimeTable():
 
         childlist=self.sortANDreverse(childlist)
         childlist.reverse()
-        childlist=childlist[0:4]
+        childlist=childlist[0:10]
         secureChildlist=[]
         selectList=self.sortANDreverse(selectList)
 
@@ -133,6 +134,9 @@ class geneticTimeTable():
         childlist.reverse()
         chromosoms=self.PlaceMent(selectList,secureChildlist,chromosoms)
         self.numGenerations += 1
+        chromosoms=self.sortANDreverse(chromosoms)
+        chromosoms.reverse()
+        print(chromosoms[0])
         return chromosoms
     def PlaceMent(self,selectList,secureChildList,chromosoms):
         for child in secureChildList:
@@ -195,14 +199,14 @@ class geneticTimeTable():
         return ave / self.pupiolation
 
     def DetectiveResult(self, chromosoms):
-        if self.numGenerations!=101:
+        if self.numGenerations!=self.numGenarationInput+1:
             self.sortANDreverse(chromosoms)
             if chromosoms[0][1] == 0:
                 print(chromosoms[0][1])
             newPopulation=self.Selectparent(chromosoms)
             self.DetectiveResult(newPopulation)
         else:
-            print(chromosoms)
+           pass
 
-sample=geneticTimeTable(time=4,class_num=8,day="monday")
+sample=geneticTimeTable(time=4,class_num=8,day="monday",numGenarationInput=1000)
 
