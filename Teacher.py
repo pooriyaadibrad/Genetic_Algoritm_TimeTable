@@ -1,13 +1,13 @@
 from sqlalchemy import Column, create_engine, INTEGER, String
 from sqlalchemy.orm import declarative_base,sessionmaker
 
-engine=create_engine("mssql+pyodbc://pooriya123:123@./geneticTime?driver=ODBC+Driver+17+for+SQL+Server")
+engine=create_engine("mssql+pyodbc://pooriya123:1234@./geneticTime?driver=ODBC+Driver+17+for+SQL+Server")
 
 base=declarative_base()
 sessions=sessionmaker(bind=engine)
 session=sessions()
 class teacher(base):
-    __tablename__="teacher"
+    __tablename__="teacher1"
     id=Column(INTEGER,primary_key=True)
     id1=Column(INTEGER)
     _name=Column(String)

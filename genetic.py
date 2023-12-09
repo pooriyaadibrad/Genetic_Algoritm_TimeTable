@@ -203,9 +203,10 @@ class geneticTimeTable():
         if self.numGenerations!=self.numGenarationInput+1:
             self.sortANDreverse(chromosoms)
             if chromosoms[0][1] == 0:
-                print(chromosoms[0][1])
-            newPopulation=self.Selectparent(chromosoms)
-            self.DetectiveResult(newPopulation)
+                print(chromosoms[0])
+            else:
+                newPopulation=self.Selectparent(chromosoms)
+                self.DetectiveResult(newPopulation)
         else:
            pass
 
