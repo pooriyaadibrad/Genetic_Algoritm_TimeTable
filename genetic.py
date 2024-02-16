@@ -3,7 +3,7 @@ from Teacher import teacher
 from collections import Counter
 from sqlalchemy import  create_engine
 from sqlalchemy.orm import sessionmaker
-
+import matplotlib.pyplot as plt
 engine=create_engine("mssql+pyodbc://pooriya123:123@./geneticTime?driver=ODBC+Driver+17+for+SQL+Server")
 
 
@@ -19,24 +19,33 @@ class geneticTimeTable():
         self.week=['Saturday','Sunday','Monday','Tuesday','Wednesday']
         self.numGenerations=0
         self.pupiolation =100
-        self.mutateRate=0.5
+        self.mutateRate=0.2
         self.sumOfFittnes=0
         self.countConst=0
         self.softFittnes=9
+        self.xplot=[]
+        self.yplot=[]
         self.algorithmGenetic()
     def algorithmGenetic(self,chromosomes=[]):
+
         self.numGenerations += 1
         print(self.numGenerations)
         if len(chromosomes) == 0:
             for i in range(5):
                 self.day=self.week[i]
                 chromosomes.append(self.InitPopulation())
-
+            for i in range(5):
+                self.sumOfFittnes+=chromosomes[i][0][1]
+            self.plot()
             self.DetectiveResult(chromosomes)
         else:
+
             print(self.countConst,"countConst")
             if self.countConst==10:
-                self.softFittnes-=1
+                if self.softFittnes>1:
+                    self.softFittnes-=1
+                else:
+                    self.softFittnes=1
             for i in range(5):
                 self.day = self.week[i]
                 chromosomes[i]=self.Selectparent(chromosomes[i])
@@ -47,10 +56,20 @@ class geneticTimeTable():
             print(self.sumOfFittnes,"self.sumOfFittnes")
             if self.CheckConstFittnes(sumOfFittnes):
                 self.countConst+=1
+                self.mutateRate+=0.1
             else:
                 self.countConst=0
             self.sumOfFittnes = sumOfFittnes
+            self.plot()
             self.DetectiveResult(chromosomes)
+
+    def plot(self):
+        self.xplot.append(self.numGenerations)
+        self.yplot.append(self.sumOfFittnes)
+        plt.xlabel("numGenerations")
+        plt.ylabel("sumOfFittnes")
+        plt.plot(self.xplot,self.yplot)
+        plt.show()
     def CheckConstFittnes(self,sumOfFitnesses):
         if sumOfFitnesses==self.sumOfFittnes:
             return True
@@ -148,12 +167,12 @@ class geneticTimeTable():
         chromosoms.reverse()
         ave=self.avrage_fittnes(chromosoms)
         selectList=[]
-        for k in range(10):
+        for k in range(5):
             selectList.append(chromosoms[k])
             selectList.append(chromosoms[-(k+1)])
         childlist = []
-        for i in range(0, 9):
-            for j in range(i + 1, 10):
+        for i in range(0, 4):
+            for j in range(i + 1, 5):
                 parent1 = selectList[i]
                 parent2 = selectList[j]
 
@@ -161,7 +180,7 @@ class geneticTimeTable():
 
         childlist=self.sortANDreverse(childlist)
         childlist.reverse()
-        childlist=childlist[0:10]
+        childlist=childlist[0:5]
         secureChildlist=[]
         selectList=self.sortANDreverse(selectList)
 
@@ -244,7 +263,7 @@ class geneticTimeTable():
                 sumOfFitness +=chromosoms[i][0][1]
             if sumOfFitness == 0:
                 for i in range(5):
-                    print("Answer",chromosoms[i])
+                    print("Answer",chromosoms[i][0])
             else:
                 self.algorithmGenetic(chromosoms)
 
