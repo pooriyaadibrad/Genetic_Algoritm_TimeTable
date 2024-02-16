@@ -4,7 +4,7 @@ from Teacher import teacher
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-engine=create_engine("mssql+pyodbc://pooriya123:1234@./geneticTime?driver=ODBC+Driver+17+for+SQL+Server")
+engine=create_engine("mssql+pyodbc://pooriya123:123@./geneticTime?driver=ODBC+Driver+17+for+SQL+Server")
 
 
 session=sessionmaker(bind=engine)
