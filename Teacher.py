@@ -1,7 +1,7 @@
 from sqlalchemy import Column, create_engine, INTEGER, String
 from sqlalchemy.orm import declarative_base,sessionmaker
 
-engine=create_engine("mssql+pyodbc://pooriya123:1234@./geneticTime?driver=ODBC+Driver+17+for+SQL+Server")
+engine=create_engine("mssql+pyodbc://pooriya123:123@./geneticTime?driver=ODBC+Driver+17+for+SQL+Server")
 
 base=declarative_base()
 sessions=sessionmaker(bind=engine)

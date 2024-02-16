@@ -10,16 +10,52 @@ engine=create_engine("mssql+pyodbc://pooriya123:123@./geneticTime?driver=ODBC+Dr
 sessions=sessionmaker(bind=engine)
 session=sessions()
 class geneticTimeTable():
-    def __init__(self, time, class_num, day,numGenarationInput=100):
+    def __init__(self, time, class_num,numGenarationInput=100):
         self.time = time
         self.teacher_num = 0
         self.class_num = class_num
-        self.day = day
+        self.day = None
         self.numGenarationInput=numGenarationInput
+        self.week=['Saturday','Sunday','Monday','Tuesday','Wednesday']
         self.numGenerations=0
         self.pupiolation =100
         self.mutateRate=0.5
-        self.InitPopulation()
+        self.sumOfFittnes=0
+        self.countConst=0
+        self.softFittnes=9
+        self.algorithmGenetic()
+    def algorithmGenetic(self,chromosomes=[]):
+        self.numGenerations += 1
+        print(self.numGenerations)
+        if len(chromosomes) == 0:
+            for i in range(5):
+                self.day=self.week[i]
+                chromosomes.append(self.InitPopulation())
+
+            self.DetectiveResult(chromosomes)
+        else:
+            print(self.countConst,"countConst")
+            if self.countConst==10:
+                self.softFittnes-=1
+            for i in range(5):
+                self.day = self.week[i]
+                chromosomes[i]=self.Selectparent(chromosomes[i])
+            sumOfFittnes=0
+            for i in range(5):
+                sumOfFittnes+=chromosomes[i][0][1]
+            print(sumOfFittnes,"sumOfFittnes")
+            print(self.sumOfFittnes,"self.sumOfFittnes")
+            if self.CheckConstFittnes(sumOfFittnes):
+                self.countConst+=1
+            else:
+                self.countConst=0
+            self.sumOfFittnes = sumOfFittnes
+            self.DetectiveResult(chromosomes)
+    def CheckConstFittnes(self,sumOfFitnesses):
+        if sumOfFitnesses==self.sumOfFittnes:
+            return True
+        else:
+            return False
     def NumberOfTeacher(self):
         count=0
         date=session.query(teacher).all()
@@ -27,6 +63,7 @@ class geneticTimeTable():
             if i.id1>count:
                 count=i.id1
         return count
+
     def InitPopulation(self):
         self.teacher_num=self.NumberOfTeacher()
         chromosomes = []
@@ -44,7 +81,8 @@ class geneticTimeTable():
             chromosomesWithFittnes.append(self.Compration(chromosome))
 
         newPopulation=self.Selectparent(chromosomesWithFittnes)
-        self.DetectiveResult(newPopulation)
+        return newPopulation
+       #self.DetectiveResult(newPopulation)
 
     def Compration(self,chromosome):
         FittnesAfterConfilictCheck=self.Confilict(chromosome)
@@ -81,7 +119,7 @@ class geneticTimeTable():
                 for TeacherId in times:
                     CheckResult=self.Data(TeacherId,iTimes)
                     if CheckResult:
-                        FittnesAfterConfilictCheck+=1
+                        FittnesAfterConfilictCheck+=self.softFittnes
             FittnesAfterSoftCheck=FittnesAfterConfilictCheck
             return FittnesAfterSoftCheck
         else:
@@ -92,7 +130,7 @@ class geneticTimeTable():
                     if CheckResult:
                         print(times)
                         print(TeacherId)
-                        FittnesAfterConfilictCheck += 1
+                        FittnesAfterConfilictCheck += self.softFittnes
             FittnesAfterSoftCheck = FittnesAfterConfilictCheck
             return FittnesAfterSoftCheck
 
@@ -133,11 +171,10 @@ class geneticTimeTable():
         childlist=self.sortANDreverse(secureChildlist)
         childlist.reverse()
         chromosoms=self.PlaceMent(selectList,secureChildlist,chromosoms)
-        self.numGenerations += 1
-        print(self.numGenerations)
+
         chromosoms=self.sortANDreverse(chromosoms)
         chromosoms.reverse()
-        print(chromosoms[0])
+        print(chromosoms[0],self.day)
         return chromosoms
     def PlaceMent(self,selectList,secureChildList,chromosoms):
         for child in secureChildList:
@@ -200,15 +237,19 @@ class geneticTimeTable():
         return ave / self.pupiolation
 
     def DetectiveResult(self, chromosoms):
+
         if self.numGenerations!=self.numGenarationInput+1:
-            self.sortANDreverse(chromosoms)
-            if chromosoms[0][1] == 0:
-                print(chromosoms[0])
+            sumOfFitness = 0
+            for i in range(5):
+                sumOfFitness +=chromosoms[i][0][1]
+            if sumOfFitness == 0:
+                for i in range(5):
+                    print("Answer",chromosoms[i])
             else:
-                newPopulation=self.Selectparent(chromosoms)
-                self.DetectiveResult(newPopulation)
+                self.algorithmGenetic(chromosoms)
+
         else:
            pass
 
-sample=geneticTimeTable(time=4,class_num=8,day="monday",numGenarationInput=965)
+sample=geneticTimeTable(time=4,class_num=3,numGenarationInput=965)
 
